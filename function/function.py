@@ -56,7 +56,7 @@ def convert_for_5shots(support_images, support_targets, device):
     return new_support_images
 
 #---------------------------------------Calculate accuracy-----------------------
-def cal_accuracy_fewshot(loader, net, device):
+def cal_accuracy_fewshot_1shot(loader, net, device):
     true_label = 0
     num_batches = 0
 
@@ -87,7 +87,7 @@ def cal_accuracy_fewshot_5shot(loader, net, device):
         targets = targets.permute(1,0)
 
         for i in range(len(q)):
-            scores, vec_q, vec_s = net(q[i], s)
+            scores = net(q[i], s)
             scores = scores.float()
             target = targets[i].long()
             true_label += 1 if torch.argmax(scores) == target else 0
@@ -96,7 +96,7 @@ def cal_accuracy_fewshot_5shot(loader, net, device):
     return true_label/num_batches
 
 #------------------Predict fewshot-----------------------------------------------#
-def predicted_fewshot(loader, net, device):
+def predicted_fewshot_1shot(loader, net, device):
     predicted = []
     true_labels = []
 
@@ -126,7 +126,7 @@ def predicted_fewshot_5shot(loader, net, device):
         targets = targets.permute(1,0)
 
         for i in range(len(q)):
-            scores, _, _ = net(q[i], s)
+            scores = net(q[i], s)
             scores = scores.float()
             target = targets[i].long()
             predicted.append(scores.cpu().detach().numpy())
@@ -159,108 +159,108 @@ def print_model_layers(model):
 
 
 
- #-------------------evaluation metrics-------------------------------------
-def cal_metrics_5shot(loader, net, device, num_classes):
-    dict_tp = {i: 0 for i in range(num_classes)}
-    dict_fp = {i: 0 for i in range(num_classes)}
-    dict_fn = {i: 0 for i in range(num_classes)}
+#  #-------------------evaluation metrics-------------------------------------
+# def cal_metrics_5shot(loader, net, device, num_classes):
+#     dict_tp = {i: 0 for i in range(num_classes)}
+#     dict_fp = {i: 0 for i in range(num_classes)}
+#     dict_fn = {i: 0 for i in range(num_classes)}
 
-    num_batches = 0
+#     num_batches = 0
 
-    for query_images, query_targets, support_images, support_targets in loader:
+#     for query_images, query_targets, support_images, support_targets in loader:
 
-        q = query_images.permute(1, 0, 2, 3, 4).to(device)
-        s = convert_for_5shots(support_images, support_targets, device)
-        targets = query_targets.to(device)
-        targets = targets.permute(1,0)
+#         q = query_images.permute(1, 0, 2, 3, 4).to(device)
+#         s = convert_for_5shots(support_images, support_targets, device)
+#         targets = query_targets.to(device)
+#         targets = targets.permute(1,0)
 
-        for i in range(len(q)):
-            scores, vec_q, vec_s = net(q[i], s)
-            scores = scores.float()
-            target = targets[i].long()   
-            if torch.argmax(scores) == target:
-                dict_tp[int(target)] += 1
-            else:
-                dict_fp[int(target)] += 1
-                dict_fn[int(torch.argmax(scores))] += 1
-            num_batches += 1
+#         for i in range(len(q)):
+#             scores, vec_q, vec_s = net(q[i], s)
+#             scores = scores.float()
+#             target = targets[i].long()   
+#             if torch.argmax(scores) == target:
+#                 dict_tp[int(target)] += 1
+#             else:
+#                 dict_fp[int(target)] += 1
+#                 dict_fn[int(torch.argmax(scores))] += 1
+#             num_batches += 1
 
-    precision_dict = {}
-    recall_dict = {}
-    f1_dict = {}
-
-
-    print("TP:", dict_tp)
-    print("FP:", dict_fp)
-    print("FN:", dict_fn)
-
-    for i in dict_tp.keys():
-        precision_dict[i] = dict_tp[i] / (dict_tp[i] + dict_fp[i])
-        recall_dict[i] = dict_tp[i] / (dict_tp[i] + dict_fn[i])
-        f1_dict[i] = 2 * (precision_dict[i] * recall_dict[i]) / (precision_dict[i] + recall_dict[i] + 1e-6)
-
-    print("Precision:", precision_dict)
-    print("Recall:", recall_dict)
-    print("F1:", f1_dict)
+#     precision_dict = {}
+#     recall_dict = {}
+#     f1_dict = {}
 
 
-    precision = sum(precision_dict.values()) / len(precision_dict)
-    recall = sum(recall_dict.values()) / len(recall_dict)     
-    accuracy = sum(dict_tp.values()) / num_batches
+#     print("TP:", dict_tp)
+#     print("FP:", dict_fp)
+#     print("FN:", dict_fn)
 
-    f1_score = (precision * recall * 2) / (precision + recall + 1e-6)
+#     for i in dict_tp.keys():
+#         precision_dict[i] = dict_tp[i] / (dict_tp[i] + dict_fp[i])
+#         recall_dict[i] = dict_tp[i] / (dict_tp[i] + dict_fn[i])
+#         f1_dict[i] = 2 * (precision_dict[i] * recall_dict[i]) / (precision_dict[i] + recall_dict[i] + 1e-6)
 
-    return accuracy, f1_score, recall
-
-
-def cal_metrics_fewshot(loader, net, device, num_classes):
-    dict_tp = {i: 0 for i in range(num_classes)}
-    dict_fp = {i: 0 for i in range(num_classes)}
-    dict_fn = {i: 0 for i in range(num_classes)}
-
-    num_batches = 0
-
-    for query_images, query_targets, support_images, support_targets in loader:
-
-        q = query_images.permute(1, 0, 2, 3, 4).to(device)
-        s = support_images.permute(1, 0, 2, 3, 4).to(device)
-        targets = query_targets.to(device)
-        targets = targets.permute(1,0)
-
-        for i in range(len(q)):
-            scores, vec_q, vec_s = net(q[i], s)
-            scores = scores.float()
-            target = targets[i].long()   
-            if torch.argmax(scores) == target:
-                dict_tp[int(target)] += 1
-            else:
-                dict_fp[int(target)] += 1
-                dict_fn[int(torch.argmax(scores))] += 1
-            num_batches += 1
-
-    precision_dict = {}
-    recall_dict = {}
-    f1_dict = {}
+#     print("Precision:", precision_dict)
+#     print("Recall:", recall_dict)
+#     print("F1:", f1_dict)
 
 
-    print("TP:", dict_tp)
-    print("FP:", dict_fp)
-    print("FN:", dict_fn)
+#     precision = sum(precision_dict.values()) / len(precision_dict)
+#     recall = sum(recall_dict.values()) / len(recall_dict)     
+#     accuracy = sum(dict_tp.values()) / num_batches
 
-    for i in dict_tp.keys():
-        precision_dict[i] = dict_tp[i] / (dict_tp[i] + dict_fp[i])
-        recall_dict[i] = dict_tp[i] / (dict_tp[i] + dict_fn[i])
-        f1_dict[i] = 2 * (precision_dict[i] * recall_dict[i]) / (precision_dict[i] + recall_dict[i] + 1e-6)
+#     f1_score = (precision * recall * 2) / (precision + recall + 1e-6)
 
-    print("Precision:", precision_dict)
-    print("Recall:", recall_dict)
-    print("F1:", f1_dict)
+#     return accuracy, f1_score, recall
 
 
-    precision = sum(precision_dict.values()) / len(precision_dict)
-    recall = sum(recall_dict.values()) / len(recall_dict)     
-    accuracy = sum(dict_tp.values()) / num_batches
+# def cal_metrics_fewshot(loader, net, device, num_classes):
+#     dict_tp = {i: 0 for i in range(num_classes)}
+#     dict_fp = {i: 0 for i in range(num_classes)}
+#     dict_fn = {i: 0 for i in range(num_classes)}
 
-    f1_score = (precision * recall * 2) / (precision + recall + 1e-6)
+#     num_batches = 0
 
-    return accuracy, f1_score, recall 
+#     for query_images, query_targets, support_images, support_targets in loader:
+
+#         q = query_images.permute(1, 0, 2, 3, 4).to(device)
+#         s = support_images.permute(1, 0, 2, 3, 4).to(device)
+#         targets = query_targets.to(device)
+#         targets = targets.permute(1,0)
+
+#         for i in range(len(q)):
+#             scores, vec_q, vec_s = net(q[i], s)
+#             scores = scores.float()
+#             target = targets[i].long()   
+#             if torch.argmax(scores) == target:
+#                 dict_tp[int(target)] += 1
+#             else:
+#                 dict_fp[int(target)] += 1
+#                 dict_fn[int(torch.argmax(scores))] += 1
+#             num_batches += 1
+
+#     precision_dict = {}
+#     recall_dict = {}
+#     f1_dict = {}
+
+
+#     print("TP:", dict_tp)
+#     print("FP:", dict_fp)
+#     print("FN:", dict_fn)
+
+#     for i in dict_tp.keys():
+#         precision_dict[i] = dict_tp[i] / (dict_tp[i] + dict_fp[i])
+#         recall_dict[i] = dict_tp[i] / (dict_tp[i] + dict_fn[i])
+#         f1_dict[i] = 2 * (precision_dict[i] * recall_dict[i]) / (precision_dict[i] + recall_dict[i] + 1e-6)
+
+#     print("Precision:", precision_dict)
+#     print("Recall:", recall_dict)
+#     print("F1:", f1_dict)
+
+
+#     precision = sum(precision_dict.values()) / len(precision_dict)
+#     recall = sum(recall_dict.values()) / len(recall_dict)     
+#     accuracy = sum(dict_tp.values()) / num_batches
+
+#     f1_score = (precision * recall * 2) / (precision + recall + 1e-6)
+
+#     return accuracy, f1_score, recall 

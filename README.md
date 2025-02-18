@@ -65,15 +65,6 @@ Please feel free to contact me via email linh.tn212860@sis.hust.edu.vn if you ne
 ## Citation
 If you feel this code is useful, please give us 1 ⭐ and cite our paper.
 ```bash
-# @article{truong2025sc,
-#   title={SC-MambaFew: Few-shot learning based on Mamba and selective spatial-channel attention for bearing fault diagnosis},
-#   author={Truong, Gia-Bao and Tran, Thi-Thao and Than, Nhu-Linh and Nguyen, Thi Hue and Pham, Van-Truong and others},
-#   journal={Computers and Electrical Engineering},
-#   volume={123},
-#   pages={110004},
-#   year={2025},
-#   publisher={Elsevier}
-# }
 
 
 ```

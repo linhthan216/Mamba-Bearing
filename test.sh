@@ -3,11 +3,11 @@
 usage() {
     echo "Usage: $0 <mode> <dataset>"
     echo "  <mode>      Testing mode: 1 for 1-shot or 5 for 5-shot"
-    echo "  <dataset>   Dataset selection: 'CWRU' or 'HUST'"
+    echo "  <dataset>   Dataset selection: 'CWRU' or 'PDB'"
     echo
     echo "Examples:"
     echo "  bash $0 1 CWRU    # Runs 1-shot testing on CWRU dataset"
-    echo "  bash $0 5 HUST    # Runs 5-shot testing on HUST dataset"
+    echo "  bash $0 5 PDB    # Runs 5-shot testing on PDB dataset"
     exit 1
 }
 
@@ -22,15 +22,15 @@ MODEL_NAME="Net"
 
 # Validate dataset selection
 if [[ "$DATASET" != "CWRU" && "$DATASET" != "HUST" ]]; then
-    echo "Error: Dataset must be 'CWRU' or 'HUST'."
+    echo "Error: Dataset must be 'CWRU' or 'PDB'."
     usage
 fi
 
 
 BEST_WEIGHT_CWRU_1SHOT="/path/to/CWRU_1shot_best_weight.pth"
 BEST_WEIGHT_CWRU_5SHOT="/path/to/CWRU_5shot_best_weight.pth"
-BEST_WEIGHT_HUST_1SHOT="/path/to/HUST_1shot_best_weight.pth"
-BEST_WEIGHT_HUST_5SHOT="/path/to/HUST_5shot_best_weight.pth"
+BEST_WEIGHT_HUST_1SHOT="/path/to/PDB_1shot_best_weight.pth"
+BEST_WEIGHT_HUST_5SHOT="/path/to/PDB_5shot_best_weight.pth"
 
 # Select the correct weight file based on mode and dataset
 if [ "$MODE" -eq 1 ]; then

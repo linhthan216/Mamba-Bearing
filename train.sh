@@ -3,11 +3,11 @@
 usage() {
     echo "Usage: $0 <mode> <dataset>"
     echo "  <mode>      Training mode: 1 for 1-shot or 5 for 5-shot"
-    echo "  <dataset>   Dataset selection: 'CWRU' or 'HUST'"
+    echo "  <dataset>   Dataset selection: 'CWRU' or 'PDB'"
     echo
     echo "Examples:"
     echo "  bash $0 1 CWRU    # Runs 1-shot training on CWRU dataset"
-    echo "  bash $0 5 HUST    # Runs 5-shot training on HUST dataset"
+    echo "  bash $0 5 HUST    # Runs 5-shot training on PDB dataset"
     exit 1
 }
 
@@ -20,8 +20,8 @@ MODE=$1
 DATASET=$2
 
 # Validate dataset selection
-if [[ "$DATASET" != "CWRU" && "$DATASET" != "HUST" ]]; then
-    echo "Error: Dataset must be 'CWRU' or 'HUST'."
+if [[ "$DATASET" != "CWRU" && "$DATASET" != "PDB" ]]; then
+    echo "Error: Dataset must be 'CWRU' or 'PDB'."
     usage
 fi
 
@@ -37,8 +37,8 @@ if [ "$DATASET" == "CWRU" ]; then
     TRAINING_SAMPLES="$TRAINING_SAMPLES_CWRU"
     TRAINING_SAMPLES_OPTION="--training_samples_CWRU $TRAINING_SAMPLES"
 else
-    TRAINING_SAMPLES="$TRAINING_SAMPLES_HUST"
-    TRAINING_SAMPLES_OPTION="--training_samples_HUST $TRAINING_SAMPLES"
+    TRAINING_SAMPLES="$TRAINING_SAMPLES_PDB"
+    TRAINING_SAMPLES_OPTION="--training_samples_PDB $TRAINING_SAMPLES"
 fi
 
 # Choose the appropriate training script
