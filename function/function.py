@@ -73,7 +73,7 @@ def cal_accuracy_fewshot(loader, net, device):
             true_label += 1 if torch.argmax(scores) == target else 0
             num_batches += 1
 
-    return true_label/num_batches, vec_q, vec_s
+    return true_label/num_batches
 
 #---------------------------------------Calculate accuracy 5 shot-----------------------
 def cal_accuracy_fewshot_5shot(loader, net, device):
@@ -93,11 +93,7 @@ def cal_accuracy_fewshot_5shot(loader, net, device):
             true_label += 1 if torch.argmax(scores) == target else 0
             num_batches += 1
 
-    return true_label/num_batches, vec_q, vec_s
-
-
-
-
+    return true_label/num_batches
 
 #------------------Predict fewshot-----------------------------------------------#
 def predicted_fewshot(loader, net, device):
@@ -117,7 +113,7 @@ def predicted_fewshot(loader, net, device):
             predicted.append(scores.cpu().detach().numpy())
             true_labels.append(target.cpu().detach().numpy())
 
-    return np.array(true_labels), np.array(predicted), vec_q, vec_s
+    return np.array(true_labels), np.array(predicted)
 
 def predicted_fewshot_5shot(loader, net, device):
     predicted = []
