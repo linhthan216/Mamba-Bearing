@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 ``` bash
 git clone https://github.com/linhthan216/Mamba-Bearing.git
-cd few-shot-mamba
+cd Mamba-Bearing
 ```
 
 ### Data
@@ -61,19 +61,19 @@ bash test.sh 5
 ```
 
 ## Contact
-Please feel free to contact me via email bao.tg212698@sis.hust.edu.vn or giabaotruong.work@gmail.com if you need anything related to this repo!
+Please feel free to contact me via email linh.tn212860@sis.hust.edu.vn if you need anything related to this repo!
 ## Citation
 If you feel this code is useful, please give us 1 ⭐ and cite our paper.
 ```bash
-@article{truong2025sc,
-  title={SC-MambaFew: Few-shot learning based on Mamba and selective spatial-channel attention for bearing fault diagnosis},
-  author={Truong, Gia-Bao and Tran, Thi-Thao and Than, Nhu-Linh and Nguyen, Thi Hue and Pham, Van-Truong and others},
-  journal={Computers and Electrical Engineering},
-  volume={123},
-  pages={110004},
-  year={2025},
-  publisher={Elsevier}
-}
+# @article{truong2025sc,
+#   title={SC-MambaFew: Few-shot learning based on Mamba and selective spatial-channel attention for bearing fault diagnosis},
+#   author={Truong, Gia-Bao and Tran, Thi-Thao and Than, Nhu-Linh and Nguyen, Thi Hue and Pham, Van-Truong and others},
+#   journal={Computers and Electrical Engineering},
+#   volume={123},
+#   pages={110004},
+#   year={2025},
+#   publisher={Elsevier}
+# }
 
 
 ```
